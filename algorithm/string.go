@@ -206,3 +206,59 @@ func backspaceCompare(S string, T string) bool {
 func BackspaceCompare(S string, T string) bool {
 	return backspaceCompare(S, T)
 }
+
+/*
+https://leetcode.com/problems/regular-expression-matching/
+*/
+
+func IsMatch(s string, p string) bool {
+	return isMatch(s, p)
+}
+
+func isMatch(str string, p string) bool {
+	type token struct {
+		char byte
+		star bool
+	}
+
+	tokens := make([]token, 0, len(p))
+	for i := 0; i < len(p); i++ {
+		token := token{
+			char: p[i],
+		}
+		if i+1 < len(p) && p[i+1] == '*' {
+			token.star = true
+			i++
+		}
+		tokens = append(tokens, token)
+	}
+
+	match := make([][]bool, len(tokens)+1)
+	for i := 0; i <= len(tokens); i++ {
+		match[i] = make([]bool, len(str)+1)
+	}
+
+	match[0][0] = true
+	for t := 1; t <= len(tokens); t++ {
+		token := tokens[t-1]
+		match[t][0] = match[t-1][0] && token.star
+
+		for s := 1; s <= len(str); s++ {
+			char := str[s-1]
+			if token.star {
+				// token is star, can match or skip
+				if char == token.char || token.char == '.' {
+					match[t][s] = match[t-1][s-1] || match[t][s-1] || match[t-1][s]
+				} else {
+					match[t][s] = match[t-1][s]
+				}
+			} else {
+				// token is not star, must match
+				match[t][s] = (char == token.char || token.char == '.') && match[t-1][s-1]
+			}
+		}
+	}
+
+	//fmt.Println(tokens)
+	return match[len(tokens)][len(str)]
+}
