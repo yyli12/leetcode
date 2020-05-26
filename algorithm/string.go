@@ -1,6 +1,9 @@
 package algorithm
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 /*
 https://leetcode.com/problems/integer-to-english-words/
@@ -261,4 +264,33 @@ func isMatch(str string, p string) bool {
 
 	//fmt.Println(tokens)
 	return match[len(tokens)][len(str)]
+}
+
+func FrequencySort(s string) string {
+	return frequencySort(s)
+}
+
+func frequencySort(s string) string {
+	ct := make([]int, 1<<8)
+	cs := make([]byte, 0, 1<<8)
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if ct[c] == 0 {
+			cs = append(cs, c)
+		}
+		ct[c]++
+	}
+
+	sort.SliceStable(cs, func(i, j int) bool {
+		return ct[cs[i]] > ct[cs[j]]
+	})
+
+	result := make([]byte, 0, len(s))
+	for _, c := range cs {
+		for ct[c] > 0 {
+			result = append(result, c)
+			ct[c]--
+		}
+	}
+	return string(result)
 }

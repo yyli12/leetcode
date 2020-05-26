@@ -2,13 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/leetcode/algorithm/dp"
+	"github.com/leetcode/algorithm"
 )
 
 func main() {
-	fmt.Println(dp.CountSquares([][]int{
-		{0, 1, 1, 1},
-		{1, 1, 1, 1},
-		{0, 1, 1, 1},
-	}))
+	fmt.Println(algorithm.FrequencySort("his s he a ha he  ha ae"))
 }
