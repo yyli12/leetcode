@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
-	fmt.Println(algorithm.FrequencySort("his s he a ha he  ha ae"))
+	//fmt.Println(algorithm.FindMaxLength([]int{0,0,0,0}))
+	fmt.Println(algorithm.CountBits(5))
 }

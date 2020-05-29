@@ -62,3 +62,78 @@ func threeEqualParts(A []int) []int {
 	}
 	return []int{-1, -1}
 }
+
+func FindMaxLength(nums []int) int {
+	return findMaxLength(nums)
+}
+
+func findMaxLength(nums []int) int {
+	n := len(nums)
+	n1 := 0
+	for _, num := range nums {
+		n1 += num
+	}
+	n0 := n - n1
+	if n0 == n1 {
+		return n
+	}
+	if n0 == 0 || n1 == 0 {
+		return 0
+	}
+
+	result := 0
+	for i := 0; i < n; i++ {
+		count := 0
+		for j := i; j < n; j++ {
+			count += nums[j]
+			if (j-i)%2 == 0 && count == (j-i)/2 && j-i > result {
+				result = j - i
+			}
+		}
+	}
+
+	return result
+}
+
+func PossibleBipartition(N int, dislikes [][]int) bool {
+	return possibleBipartition(N, dislikes)
+}
+
+func possibleBipartition(N int, dislikes [][]int) bool {
+	group := make([]int, N+1)
+	dislikeTable := make([][]int, N+1)
+	for _, dislike := range dislikes {
+		i, j := dislike[0], dislike[1]
+		dislikeTable[i] = append(dislikeTable[i], j)
+		dislikeTable[j] = append(dislikeTable[j], i)
+	}
+
+	checkAndMark := func(start int, groupID int) bool {
+		thisGroup := map[int]struct{}{start: {}}
+		for len(thisGroup) > 0 {
+			nextGroup := map[int]struct{}{}
+			for i := range thisGroup {
+				if group[i] != 0 {
+					if group[i] != groupID {
+						return false
+					}
+				} else {
+					group[i] = groupID
+					for _, j := range dislikeTable[i] {
+						nextGroup[j] = struct{}{}
+					}
+				}
+			}
+			thisGroup = nextGroup
+			groupID = -groupID
+		}
+		return true
+	}
+
+	for i := 1; i <= N; i++ {
+		if group[i] == 0 && !checkAndMark(i, 1) {
+			return false
+		}
+	}
+	return true
+}

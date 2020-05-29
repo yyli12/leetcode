@@ -27,3 +27,30 @@ func CheckStraightLine2(coordinates [][]int) bool {
 
 	return true
 }
+
+func CountBits(num int) []int {
+	return countBits(num)
+}
+
+func countBits(num int) []int {
+	if num == 0 {
+		return []int{0}
+	}
+	if num == 1 {
+		return []int{0, 1}
+	}
+
+	result := make([]int, num+1)
+	result[1] = 1
+
+	term := 2
+	n := 2
+	for n <= num {
+		for i := 0; i < term && n <= num; i++ {
+			result[n] = 1 + result[i]
+			n++
+		}
+		term <<= 1
+	}
+	return result
+}
