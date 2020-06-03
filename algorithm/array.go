@@ -1,5 +1,7 @@
 package algorithm
 
+import "sort"
+
 func ThreeEqualParts(A []int) []int {
 	return threeEqualParts(A)
 }
@@ -136,4 +138,23 @@ func possibleBipartition(N int, dislikes [][]int) bool {
 		}
 	}
 	return true
+}
+
+func twoCitySchedCost(costs [][]int) int {
+	N := len(costs) >> 1
+	sum := 0
+	diff := make([]int, N<<1)
+	for i, cost := range costs {
+		sum += cost[0]
+		diff[i] = cost[1] - cost[0]
+	}
+	sort.Ints(diff)
+	for i := 0; i < N; i++ {
+		sum += diff[i]
+	}
+	return sum
+}
+
+func TwoCitySchedCost(costs [][]int) int {
+	return twoCitySchedCost(costs)
 }
