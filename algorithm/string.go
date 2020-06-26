@@ -3,6 +3,7 @@ package algorithm
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 /*
@@ -293,4 +294,146 @@ func frequencySort(s string) string {
 		}
 	}
 	return string(result)
+}
+
+func validIPv4Segment(segment string) bool {
+	if len(segment) > 3 || len(segment) == 0 {
+		return false
+	}
+	if segment == "0" {
+		return true
+	}
+	leadingZero := true
+	result := 0
+	multiplier := 1
+	switch len(segment) {
+	case 3:
+		multiplier = 100
+		break
+	case 2:
+		multiplier = 10
+		break
+	}
+	for _, digit := range segment {
+		if digit > '9' || digit < '0' {
+			return false
+		}
+		if leadingZero && digit == '0' {
+			return false
+		}
+		leadingZero = false
+		result += int(digit-'0') * multiplier
+		multiplier /= 10
+	}
+	fmt.Println(result)
+	return result < 256
+}
+
+func isIPv4(ip string) bool {
+	segments := strings.Split(ip, ".")
+	if len(segments) != 4 {
+		return false
+	}
+	for _, segment := range segments {
+		if !validIPv4Segment(segment) {
+			return false
+		}
+	}
+	return true
+}
+
+func validIPv6Segment(segment string) bool {
+	if len(segment) > 4 || len(segment) == 0 {
+		return false
+	}
+	for _, digit := range segment {
+		if (digit > '9' || digit < '0') && (digit > 'f' || digit < 'a') && (digit > 'F' || digit < 'A') {
+			return false
+		}
+	}
+	return true
+}
+
+func isIPv6(ip string) bool {
+	segments := strings.Split(ip, ":")
+	if len(segments) != 8 {
+		return false
+	}
+	for _, segment := range segments {
+		if !validIPv6Segment(segment) {
+			return false
+		}
+	}
+	return true
+}
+
+func validIPAddress(ip string) string {
+	if isIPv4(ip) {
+		return "IPv4"
+	}
+	if isIPv6(ip) {
+		return "IPv6"
+	}
+	return "Neither"
+}
+
+func longestDupSubstring(S string) string {
+	N := len(S)
+	low := 0
+	high := N
+	for low < high {
+		l := (low + high) / 2
+		ok := false
+		result := ""
+		seenBefore := map[string]struct{}{}
+		for start := 0; start <= N-l; start++ {
+			subS := S[start : start+l]
+			if _, seen := seenBefore[subS]; seen {
+				ok = true
+				result = subS
+				break
+			}
+			seenBefore[subS] = struct{}{}
+		}
+		if ok {
+			if low == high-1 {
+				return result
+			}
+			low = l
+		} else {
+			high = l
+		}
+	}
+	return ""
+}
+
+func LongestDupSubstring(S string) string {
+	return longestDupSubstring(S)
+}
+
+func getPermutation(n int, k int) string {
+	k--
+	s := 1
+	for i := 1; i < n; i++ {
+		s *= i
+	}
+	result := ""
+	digits := "123456789"
+	digits = digits[:n]
+	for {
+		n--
+		i, nextK := k/s, k%s
+		result += digits[i : i+1]
+		digits = digits[:i] + digits[i+1:]
+		if n == 0 {
+			break
+		}
+		s /= n
+		k = nextK
+	}
+	return result
+}
+
+func GetPermutation(n int, k int) string {
+	return getPermutation(n, k)
 }

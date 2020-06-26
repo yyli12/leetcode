@@ -36,3 +36,25 @@ func find(node *TreeNode, k int) (found bool, nodeCount int, kth int) {
 	}
 	return false, leftNodeCount + rightNodeCount + 1, 0
 }
+
+func sumNumbers(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	result := 0
+	sum(root, 0, &result)
+	return result
+}
+
+func sum(root *TreeNode, prev int, result *int) {
+	prev = 10*prev + root.Val
+	if root.Left == nil && root.Right == nil {
+		*result = *result + prev + root.Val
+	}
+	if root.Left != nil {
+		sum(root.Left, prev, result)
+	}
+	if root.Right != nil {
+		sum(root.Right, prev, result)
+	}
+}

@@ -63,3 +63,59 @@ func maximumSwap(num int) int {
 func MaximumSwap(num int) int {
 	return maximumSwap(num)
 }
+
+func findDuplicate(nums []int) int {
+	n := len(nums) - 1
+	l, r := 1, n+1
+
+	for l+1 < r {
+		less, equal, greater := 0, 0, 0
+		m := (l + r) / 2
+		for _, num := range nums {
+			if num == m {
+				equal++
+				if equal > 1 {
+					break
+				}
+			} else if num < m {
+				less++
+			} else {
+				greater++
+			}
+		}
+
+		if equal > 1 {
+			return m
+		} else if less > m-1 {
+			r = m
+		} else if greater > n-m {
+			l = m + 1
+		}
+	}
+	return l
+}
+
+func FindDuplicate(nums []int) int {
+	return findDuplicate2(nums)
+}
+
+func findDuplicate2(nums []int) int {
+	var result int
+	for i := uint(0); i < 31; i++ {
+		bit := 1 << i
+		expected, actual := 0, 0
+		for j := 0; j < len(nums); j++ {
+			if j&bit > 0 {
+				expected++
+			}
+			if nums[j]&bit > 0 {
+				actual++
+			}
+		}
+		fmt.Println(expected, actual)
+		if actual > expected {
+			result ^= bit
+		}
+	}
+	return result
+}

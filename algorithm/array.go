@@ -1,6 +1,9 @@
 package algorithm
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 func ThreeEqualParts(A []int) []int {
 	return threeEqualParts(A)
@@ -157,4 +160,86 @@ func twoCitySchedCost(costs [][]int) int {
 
 func TwoCitySchedCost(costs [][]int) int {
 	return twoCitySchedCost(costs)
+}
+
+func solve(board [][]byte) {
+	old := make([][]byte, len(board))
+	for index, row := range board {
+		old[index] = make([]byte, len(row))
+		copy(old[index], row)
+		for i := 0; i < len(row); i++ {
+			row[i] = 'X'
+		}
+	}
+	var paint func(i, j int)
+	paint = func(i, j int) {
+		if 0 <= i && i < len(board) && 0 <= j && j < len(board[0]) {
+			if old[i][j] == 'O' {
+				fmt.Println(i, j, 'O')
+				old[i][j] = 'X'
+				board[i][j] = 'O'
+				paint(i-1, j)
+				paint(i+1, j)
+				paint(i, j-1)
+				paint(i, j+1)
+			}
+		}
+	}
+	for i := 0; i < len(board); i++ {
+		paint(i, 0)
+		paint(i, len(board[0])-1)
+	}
+	for j := 0; j < len(board[0]); j++ {
+		paint(0, j)
+		paint(len(board)-1, j)
+	}
+}
+
+func Solve(board [][]byte) {
+	solve(board)
+}
+
+func hIndex(citations []int) int {
+	if len(citations) == 0 {
+		return 0
+	}
+	N := len(citations)
+	if citations[N-1] == 0 {
+		return 0
+	}
+	if citations[0] >= N {
+		return N
+	}
+	l := 1
+	r := N
+	if citations[N-1] < r {
+		r = citations[N-1]
+	}
+	r++
+	for r-l > 1 {
+		h := (l + r) / 2
+		if N-1 >= h {
+			b := citations[N-h]
+			a := citations[N-h-1]
+			if a > h {
+				l = h + 1
+			} else if b < h {
+				r = h
+			} else {
+				l = h
+			}
+		} else {
+			b := citations[N-h]
+			if b < h {
+				r = h
+			} else {
+				l = h
+			}
+		}
+	}
+	return l
+}
+
+func HIndex(citations []int) int {
+	return hIndex(citations)
 }
